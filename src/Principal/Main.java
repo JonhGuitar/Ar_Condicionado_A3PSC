@@ -1,6 +1,8 @@
 package Principal;
 
+import Agendamento.Agendamento;
 import Agendamento.Equipamento;
+import Agendamento.Servico;
 import pessoa.Cliente;
 import pessoa.Funcionario; // Nome atualizado, como você mencionou.
 
@@ -14,19 +16,32 @@ public class Main {
         ArrayList<Cliente> listaDeClientes = new ArrayList<>();
         ArrayList<Funcionario> listaDeFuncionarios = new ArrayList<>();
         ArrayList<Equipamento> listaDeEquipamento = new ArrayList<>();
+        ArrayList<Servico> listaDeServicos = new ArrayList<>();
+        ArrayList<Agendamento> listaDeAgendamento = new ArrayList<>();
+
+        Funcionario funcionarioLogado = null; // Para guardar quem está usando o sistema
+        Cliente clienteLogado = null; // Para guardar quem está usando o sistema
+
 
         int operacao = -1;
 
         while (operacao != 0) {
             System.out.println("\n-------------------------------------------------------------------");
             System.out.println("Sistema de Gerenciamento de Serviços de Ar-condicionado");
+            if (funcionarioLogado != null) {
+                System.out.println(">> Logado como: " + funcionarioLogado.getNome() + " (Matrícula: " + funcionarioLogado.getMatricula() + ")");
+            }
             System.out.println("[1] Gerenciar Clientes");
             System.out.println("[2] Gerenciar Funcionários");
-            System.out.println("[3] Gerenciar Catálogo");
+            System.out.println("[3] Login como Funcionário");
+            System.out.println("[4] Gerenciar Catálogo");
+            System.out.println("[5] Login como Cliente");
+            System.out.println("[6] Realizar Novo Agendamento");
+            System.out.println("[7] Meus Agendamentos");
             System.out.println("[0] Sair do Sistema");
             System.out.print("Escolha uma operação: ");
             operacao = ler.nextInt();
-            ler.nextLine(); // Limpando o "bug"
+            ler.nextLine(); // Limpando o buffer
 
             if (operacao == 1) {
                 System.out.println("\n--- Gerenciamento de Clientes ---");
@@ -148,7 +163,7 @@ public class Main {
             } else if (operacao == 2) {
                 System.out.println("\n--- Gerenciamento de Funcionários ---");
                 System.out.println("[1] Cadastrar Novo Funcionário");
-                System.out.println("[2] Listar Funcionários Cadastrados");
+                System.out.println("[2] Listar Funcionários ");
                 System.out.println("[3] Editar Funcionário");
                 System.out.println("[4] Excluir Funcionário");
                 System.out.println("[0] Voltar ao menu principal");
@@ -168,7 +183,7 @@ public class Main {
                     System.out.print("Digite a matrícula: ");
                     int matricula = ler.nextInt();
                     ler.nextLine();
-                    Funcionario novoFuncionario = new Funcionario(nome, dataNasc,  cpf, matricula);
+                    Funcionario novoFuncionario = new Funcionario(nome, dataNasc, cpf, matricula);
                     listaDeFuncionarios.add(novoFuncionario);
                     System.out.println("\n>> Funcionário '" + nome + "' cadastrado com sucesso! <<");
                 } else if (opcaoFuncionario == 2) {
@@ -181,7 +196,7 @@ public class Main {
                             System.out.println("--------------------");
                         }
                     }
-                }  else if (opcaoFuncionario == 3) {
+                } else if (opcaoFuncionario == 3) {
 
                     System.out.println("\n--- Editar Funcionário ---");
                     if (listaDeFuncionarios.isEmpty()) {
@@ -219,7 +234,7 @@ public class Main {
                                     System.out.print("Digite o novo ano de nascimento: ");
                                     int novoAno = ler.nextInt();
                                     ler.nextLine();
-                                     funcionarioParaEditar.setDataNasc(novoAno);
+                                    funcionarioParaEditar.setDataNasc(novoAno);
                                     System.out.println("Ano de nascimento alterado com sucesso!");
                                 } else if (opcaoEdicao == 3) {
                                     System.out.print("Digite o novo CPF: ");
@@ -273,40 +288,113 @@ public class Main {
                     System.out.println("Opção inválida! Voltando ao menu principal.");
                 }
             } else if (operacao == 3) {
-                System.out.println("\n--- Gerenciamento de Catálogo ---");
+                System.out.println("\n--- Login de Funcionário ---");
+                System.out.print("Digite sua matrícula: ");
+                int matriculaLogin = ler.nextInt();
+                ler.nextLine();
+                Funcionario funcEncontrado = null; // mostra antes de rodar que está vazio
+                for (Funcionario funcionario: listaDeFuncionarios) {
+                    if (funcionario.getMatricula() == matriculaLogin) {
+                        funcEncontrado = funcionario;
+                        break;
+                    }
+                }
+                if (funcEncontrado != null) {
+                    funcionarioLogado = funcEncontrado;
+                    System.out.println("Login realizado com sucesso! Bem-vindo(a), " + funcionarioLogado.getNome());
+                } else {
+                    System.out.println("Matrícula não encontrada.");
+                }
+            } else if (operacao == 4) {
+                if (funcionarioLogado == null) {
+                    System.out.println("\nERRO: Você precisa fazer login como funcionário para acessar o catálogo.");
+                    continue;
+                }
+                System.out.println("\n--- Gerenciamento de Catálogo (Operado por: " + funcionarioLogado.getNome() + ") ---");
                 System.out.println("[1] Cadastrar Novo Equipamento");
                 System.out.println("[2] Listar Equipamentos");
                 System.out.println("[3] Cadastrar Novo Serviço");
-                System.out.println("[4] Listar Novo Serviço");
-                System.out.println("[0] Voltar ao Menu Principal");
+                System.out.println("[4] Listar Serviços");
+                System.out.println("[0] Voltar");
                 System.out.print("Escolha uma opção: ");
                 int opcaoCatalogo = ler.nextInt();
                 ler.nextLine();
-
                 if (opcaoCatalogo == 1) {
-                    System.out.println("\n--- Cadastro de Novo Equipamento ---");
-                    System.out.print("Digite o nome do equipamento (ex: Ar Condicionado Split): ");
-                    String nome = ler.nextLine();
-                    System.out.print("Digite a marca do equipamento (ex: Samsung): ");
-                    String marca = ler.nextLine();
-                    Equipamento novoEquipamento = new Equipamento(nome, marca);
-                    listaDeEquipamento.add(novoEquipamento);
-                    System.out.println("\n>> Equipamento '" + nome + "' cadastrado com sucesso no catálogo! <<");
+                    funcionarioLogado.cadastrarEquipamento(listaDeEquipamento);
                 } else if (opcaoCatalogo == 2) {
                     System.out.println("\n--- Lista de Equipamentos no Catálogo ---");
-                    if (listaDeEquipamento.isEmpty()) {
-                        System.out.println("Nenhum equipamento cadastrado ainda.");
+                    if(listaDeEquipamento.isEmpty()){ // isEmpty se está vazio
+                        System.out.println("Nenhum equipamento cadastrado.");
                     } else {
-                        for (int i = 0; i < listaDeEquipamento.size(); i++) {
-                            System.out.println("[" + (i + 1) + "] " + listaDeEquipamento.get(i).toString());
-                            System.out.println("--------------------");
+                        for(Equipamento equipamento : listaDeEquipamento){
+                            System.out.println(equipamento);
+                            System.out.println("-----------------");
+                        }
+                    }
+                } else if (opcaoCatalogo == 3) {
+                    funcionarioLogado.cadastrarServico(listaDeServicos);
+                } else if (opcaoCatalogo == 4) {
+                    System.out.println("\n--- Catálogo de Serviços ---");
+                    if (listaDeServicos.isEmpty()) {
+                        System.out.println("Nenhum serviço cadastrado.");
+                    } else {
+                        for (Servico servico : listaDeServicos) {
+                            System.out.println(servico);
+                            System.out.println("-----------------");
                         }
                     }
                 } else if (opcaoCatalogo != 0) {
                     System.out.println("Opção inválida! Voltando ao menu principal.");
                 }
-            } else if (operacao != 0) {
-                System.out.println("Opção inválida! Tente novamente.");
+            } else if (operacao == 5) {
+                System.out.println("\n--- Login de Cliente ---");
+                System.out.print("Digite seu CPF para fazer login: ");
+                String cpfLogin = ler.nextLine();
+                Cliente clienteEncontrado = null;
+                for (Cliente c : listaDeClientes) {
+                    if (c.getCpf().equals(cpfLogin)) {
+                        clienteEncontrado = c;
+                        break;
+                    }
+                }
+                if (clienteEncontrado != null) {
+                    clienteLogado = clienteEncontrado;
+                    System.out.println("Login realizado com sucesso! Bem-vindo(a), " + clienteLogado.getNome());
+                } else {
+                    System.out.println("CPF não encontrado na nossa base de clientes.");
+                }
+            } else if (operacao == 6) {
+                // Passo A: Verificar se um cliente está logado. Ninguém pode agendar sem se identificar.
+                if (clienteLogado == null) {
+                    System.out.println("\nERRO: Você precisa fazer o login como cliente antes de poder agendar!");
+                    // O 'continue' pula para a próxima volta do laço while, mostrando o menu novamente.
+                    continue;
+                }
+                System.out.println("\n--- Realizar Novo Agendamento ---");
+                clienteLogado.realizarAgendamento(listaDeFuncionarios, listaDeServicos, listaDeAgendamento);
+            } else if (operacao == 7) {
+                System.out.println("\n--- Meus Agendamentos ---");
+                if (clienteLogado == null) {
+                    System.out.println("ERRO: Faça o login como cliente para ver seus agendamentos.");
+                    continue;
+                }
+                System.out.println("Exibindo todos os agendamentos para: " + clienteLogado.getNome());
+
+                boolean encontrouAgendamentos = false;
+
+                for (Agendamento agendamento : listaDeAgendamento) {
+                    // Passo D: O 'if' é o filtro! Ele compara o objeto 'clienteLogado'
+                    // com o objeto cliente que está guardado dentro do agendamento.
+                    if (agendamento.getCliente() == clienteLogado) {
+                        System.out.println("---------------------------------");
+                        System.out.println(agendamento); // Usa o toString() completo do Agendamento
+                        encontrouAgendamentos = true; // Muda a flag para true, pois encontramos pelo menos um.
+                    }
+                }
+                // Passo E: Após o laço, se a flag ainda for false, significa que não encontramos nada.
+                if (!encontrouAgendamentos) {
+                    System.out.println("Você ainda não possui agendamentos cadastrados.");
+                }
             }
         }
     }

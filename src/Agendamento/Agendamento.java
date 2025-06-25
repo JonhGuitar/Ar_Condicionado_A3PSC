@@ -19,6 +19,7 @@ public class Agendamento {
         this.endereco = endereco;
         this.data = data;
         this.hora = hora;
+        this.statusAgendamento = statusAgendamento;
     }
 
     public String getEndereco() {
