@@ -1,0 +1,101 @@
+
+@startuml
+
+class Pessoa {
+  -nome: String
+  -anoNascimento: Int
+  -cpf: String
+  +construtor()
+  +getters_e_setters()
+  +to_string()
+}
+
+class Cliente {
+  -telefone: Int
+  +construtor()
+  +getters_e_setters()
+  +to_string()
+  +solicitar_agendamento()
+}
+
+class Funcionario {
+  -matricula: Int
+  +construtor()
+  +getters_e_setters()
+  +to_string()
+  +atualizar_status_agendamento()
+  +cadastrar_servico()
+  +cadastrar_equipamento()
+  
+}
+
+class Servico {
+  -tipo: String
+  -valor : Double
+  +construtor()
+  +getters_e_setters()
+  +to_string()
+}
+
+
+class Agendamento {
+  -data: Int
+  -hora: Int
+  -endereco: String
+  +construtor()
+  +getters_e_setters()
+  +to_string()
+}
+
+class Avaliacao {
+  -nota: Int
+  -comentario: String
+  -cliente: Cliente
+  -servico: Servico
+  +construtor()
+  +getters_e_setters()
+  +to_string()
+}
+
+class Categoria {
+  -urgencia: String
+  -localizacao: String
+  +construtor()
+  +getters_e_setters()
+  +to_string()
+}
+
+class Equipamento {
+  -marca : String
+  -modelo: String
+  +construtor()
+  +getters_e_setters()
+  +to_string()
+  
+}
+
+class Pagamento {
+  -metodo_Pagamento : String
+  -destinatario : String
+  +construtor()
+  +getters_e_setters()
+  +to_string()
+  +validarPagamento()
+  
+}
+
+Cliente -up-|> Pessoa
+Funcionario -up-|> Pessoa
+Agendamento --> Cliente
+Avaliacao --> Cliente
+Avaliacao --> Agendamento
+Agendamento <--o Servico
+Servico <--o Categoria
+Funcionario o--> Agendamento
+Funcionario o--> Equipamento
+Funcionario o--> Servico
+Servico <--o Equipamento
+Pagamento o--> Servico
+Pagamento o--> Cliente
+
+@enduml
