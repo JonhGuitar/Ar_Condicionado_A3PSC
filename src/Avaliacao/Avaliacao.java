@@ -1,22 +1,30 @@
 package Avaliacao;
 
+import Agendamento.Agendamento;
+
 public class Avaliacao {
-    private int nota;
+
+    private int nota; // Nota de 0 a 10, por exemplo
     private String comentario;
+    private Agendamento agendamento; // A referência para o agendamento que foi avaliado
 
-    public int getNota() {
-        return nota;
+    public Avaliacao(int nota, String comentario, Agendamento agendamento) {
+    this.nota = nota;
+    this.comentario = comentario;
+    this.agendamento = agendamento;
     }
 
-    public void setNota(int nota) {
-        this.nota = nota;
-    }
 
-    public String getComentario() {
-        return comentario;
-    }
+    public int getNota() { return nota; }
+    public String getComentario() { return comentario; }
+    public Agendamento getAgendamento() { return agendamento; }
 
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
+    @Override
+    public String toString() {
+    return "Avaliação do Serviço: " + agendamento.getServico().getTipo() + "\n" +
+            "\tCliente: " + agendamento.getCliente().getNome() + "\n" +
+            "\tNota: " + nota + "\n" +
+            "\tComentário: '" + comentario + "'";
     }
 }
+

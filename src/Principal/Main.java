@@ -3,8 +3,11 @@ package Principal;
 import Agendamento.Agendamento;
 import Agendamento.Equipamento;
 import Agendamento.Servico;
+import Avaliacao.Avaliacao;
 import pessoa.Cliente;
-import pessoa.Funcionario; // Nome atualizado, como você mencionou.
+import pessoa.Funcionario;
+import Agendamento.Pagamento;
+
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -18,6 +21,9 @@ public class Main {
         ArrayList<Equipamento> listaDeEquipamento = new ArrayList<>();
         ArrayList<Servico> listaDeServicos = new ArrayList<>();
         ArrayList<Agendamento> listaDeAgendamento = new ArrayList<>();
+        ArrayList<Pagamento> listaDePagamentos = new ArrayList<>();
+        ArrayList<Avaliacao> listaDeAvaliacoes = new ArrayList<>();
+
 
         Funcionario funcionarioLogado = null; // Para guardar quem está usando o sistema
         Cliente clienteLogado = null; // Para guardar quem está usando o sistema
@@ -38,10 +44,13 @@ public class Main {
             System.out.println("[5] Login como Cliente");
             System.out.println("[6] Realizar Novo Agendamento");
             System.out.println("[7] Meus Agendamentos");
+            System.out.println("[8] Atualizar Status Agendamento");
+            System.out.println("[9] Processar Pagamento");
+            System.out.println("[10] Avaliar serviço");
             System.out.println("[0] Sair do Sistema");
             System.out.print("Escolha uma operação: ");
             operacao = ler.nextInt();
-            ler.nextLine(); // Limpando o buffer
+            ler.nextLine(); // Limpa o "bug"
 
             if (operacao == 1) {
                 System.out.println("\n--- Gerenciamento de Clientes ---");
@@ -379,23 +388,78 @@ public class Main {
                     continue;
                 }
                 System.out.println("Exibindo todos os agendamentos para: " + clienteLogado.getNome());
-
                 boolean encontrouAgendamentos = false;
-
                 for (Agendamento agendamento : listaDeAgendamento) {
-                    // Passo D: O 'if' é o filtro! Ele compara o objeto 'clienteLogado'
-                    // com o objeto cliente que está guardado dentro do agendamento.
                     if (agendamento.getCliente() == clienteLogado) {
                         System.out.println("---------------------------------");
-                        System.out.println(agendamento); // Usa o toString() completo do Agendamento
-                        encontrouAgendamentos = true; // Muda a flag para true, pois encontramos pelo menos um.
+                        System.out.println(agendamento);
+                        encontrouAgendamentos = true;
                     }
                 }
-                // Passo E: Após o laço, se a flag ainda for false, significa que não encontramos nada.
                 if (!encontrouAgendamentos) {
                     System.out.println("Você ainda não possui agendamentos cadastrados.");
                 }
+            } else if (operacao == 8) { // Ação de Funcionário
+                if (funcionarioLogado == null) {
+                    System.out.println("\nERRO: Você precisa fazer login como funcionário.");
+                    continue;
+                }
+                System.out.println("\n--- Menu de Ações do Funcionário ---");
+                System.out.println("[1] Atualizar Status de Agendamento");
+                System.out.println("[0] Voltar");
+                System.out.print("Escolha uma opção: ");
+                int opcaoAcao = ler.nextInt();
+                ler.nextLine();
+                if (opcaoAcao == 1) {
+                    funcionarioLogado.atualizarStatusAgendamento( listaDeAgendamento);
+                }
+            } else if (operacao == 9) {
+                System.out.println("\n--- Processar Pagamento de Agendamento ---");
+                if (funcionarioLogado == null) {
+                    System.out.println("ERRO: Você precisa fazer login como funcionário para esta operação.");
+                    continue;
+                }
+                ArrayList<Agendamento> agendamentosPendentes = new ArrayList<>();
+                for (Agendamento ag : listaDeAgendamento) {
+                    if (ag.getStatusPagamento().equalsIgnoreCase("Pendente")) {
+                        agendamentosPendentes.add(ag);
+                    }
+                }
+                if (agendamentosPendentes.isEmpty()) {
+                    System.out.println("Não há agendamentos com pagamentos pendentes no momento.");
+                } else {
+                    System.out.println("Selecione o agendamento para processar o pagamento:");
+                    for (int i = 0; i < agendamentosPendentes.size(); i++) {
+                        Agendamento ag = agendamentosPendentes.get(i);
+                        // Mostra um resumo do agendamento pendente
+                        System.out.println("[" + (i + 1) + "] Cliente: " + ag.getCliente().getNome() +
+                                " | Serviço: " + ag.getServico().getTipo() +
+                                " | Valor: R$ " + String.format("%.2f", ag.getValorAPagar()));
+                    }
+                    System.out.print("\nDigite o número do agendamento (ou 0 para cancelar): ");
+                    int escolha = ler.nextInt();
+                    ler.nextLine();
+                    if (escolha > 0 && escolha <= agendamentosPendentes.size()) {
+                        Agendamento agendamentoAPagar = agendamentosPendentes.get(escolha - 1);
+                        System.out.print("Digite o método de pagamento (Ex: Cartão de Crédito, Pix, Dinheiro): ");
+                        String metodo = ler.nextLine();
+                        agendamentoAPagar.processarPagamento();
+                        Pagamento novoPagamento = new Pagamento(agendamentoAPagar.getValorAPagar(), metodo, agendamentoAPagar);
+                        listaDePagamentos.add(novoPagamento);
+                        System.out.println("\n--- Recibo Gerado ---");
+                        System.out.println(novoPagamento);
+                    } else {
+                        System.out.println("Operação cancelada.");
+                    }
+                }
+            } else if (operacao == 10) {
+                if (clienteLogado == null) {
+                    System.out.println("\nERRO: Você precisa fazer login como cliente para avaliar um serviço.");
+                    continue; // Volta para o início do menu
+                }
+                clienteLogado.avaliarAgendamento(listaDeAgendamento, listaDeAvaliacoes);
+            }
             }
         }
     }
-}
+

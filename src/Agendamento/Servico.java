@@ -1,7 +1,8 @@
 package Agendamento;
 
+
 public class Servico {
-    private String tipo;  // Ex: "Instalação", "Limpeza", "Deseintalação"
+    private String tipo;
     private double valor;
 
     public Servico(String tipo, double valor) {
@@ -27,8 +28,10 @@ public class Servico {
 
     @Override
     public String toString() {
-        // Formata o valor para aparecer como moeda
-        return "Tipo de Serviço: " + tipo + " | Valor: R$ " + valor;
+        return "Tipo de Serviço: " + tipo + " | Valor: R$ " + String.format("%.2f", valor);
     }
 }
+
+
+
 

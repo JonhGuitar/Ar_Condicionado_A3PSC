@@ -3,16 +3,17 @@ package Agendamento;
 import pessoa.Cliente;
 import pessoa.Funcionario;
 
-public class Agendamento {
-    private String endereco;
+public class Agendamento implements Processavel {
+    private Endereco endereco;
     private int data;
     private int hora;
     private Cliente cliente;
     private Funcionario funcionario;
     private Servico servico;
     private StatusAgendamento statusAgendamento;
+    private String statusPagamento;
 
-    public Agendamento(Cliente cliente, Funcionario funcionario, Servico servico, String endereco, int data, int hora, StatusAgendamento statusAgendamento) {
+    public Agendamento(Cliente cliente, Funcionario funcionario, Servico servico, Endereco endereco, int data, int hora, StatusAgendamento statusAgendamento) {
         this.cliente = cliente;
         this.funcionario = funcionario;
         this.servico = servico;
@@ -20,14 +21,7 @@ public class Agendamento {
         this.data = data;
         this.hora = hora;
         this.statusAgendamento = statusAgendamento;
-    }
-
-    public String getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
+        this.statusPagamento = "Pendente";
     }
 
     public int getData() {
@@ -78,14 +72,47 @@ public class Agendamento {
         this.statusAgendamento = statusAgendamento;
     }
 
+    public void setStatusPagamento(String statusPagamento) {
+        this.statusPagamento = statusPagamento;
+    }
+
+    public Funcionario getFuncionario() {
+        return funcionario;
+    }
+
+    public void setFuncionario(Funcionario funcionario) {
+        this.funcionario = funcionario;
+    }
+
+    @Override
+    public double getValorAPagar() {
+        return this.servico.getValor();
+    }
+
+    @Override
+    public void processarPagamento() {
+        System.out.println("Validando pagamento de R$ " + getValorAPagar() + "...");
+        this.statusPagamento = "Pago";
+        System.out.println("Pagamento processado e aprovado com sucesso!");
+    }
+
+    @Override
+    public String getStatusPagamento() {
+        return this.statusPagamento;
+    }
+
     @Override
     public String toString() {
+        // Agora chama o toString() do objeto Endereco
         return "--- DETALHES DO AGENDAMENTO ---\n" +
+                "Status: " + statusAgendamento + " | Pagamento: " + statusPagamento + "\n" +
                 "Data: " + data + " | Hora: " + hora + "h\n" +
-                "Endereço: " + endereco + "\n" +
+                "Endereço do Serviço: " + endereco.toString() + "\n" +
                 "\n-- Cliente --\n " + cliente.getNome() + "\n" +
-                "\n-- Técnico Responsável --\n " + funcionario.getNome() + "\n" +
+                "\n-- Funcionário Responsável --\n " + funcionario.getNome() + "\n" +
                 "\n-- Detalhes do Trabalho --\n" +
                 " " + servico.toString();
     }
 }
+
+

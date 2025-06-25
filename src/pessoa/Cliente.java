@@ -1,8 +1,9 @@
 package pessoa;
-
+import Agendamento.Endereco;
 import Agendamento.Agendamento;
 import Agendamento.Servico;
 import Agendamento.StatusAgendamento;
+import Avaliacao.Avaliacao;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -53,8 +54,19 @@ public class Cliente extends Pessoa{
         ler.nextLine();
         Funcionario funcionarioDesignado = listaDeFuncionarios.get(escolhaFunc - 1);
 
-        System.out.print("Digite o endereço completo para o serviço: ");
-        String endereco = ler.nextLine();
+        System.out.println("\n--- Endereço do Serviço ---");
+        System.out.print("Rua: ");
+        String rua = ler.nextLine();
+        System.out.print("Número: ");
+        String numero = ler.nextLine();
+        System.out.print("Bairro: ");
+        String bairro = ler.nextLine();
+        System.out.print("Cidade: ");
+        String cidade = ler.nextLine();
+        System.out.print("CEP: ");
+        String cep = ler.nextLine();
+
+        Endereco enderecoDoServico = new Endereco(rua, numero, bairro, cidade, cep);
         System.out.print("Digite a data (formato DDMMAAAA): ");
         int data = ler.nextInt();
         ler.nextLine();
@@ -62,12 +74,51 @@ public class Cliente extends Pessoa{
         int hora = ler.nextInt();
         ler.nextLine();
 
-        Agendamento novoAgendamento = new Agendamento(this, funcionarioDesignado, servicoEscolhido, endereco, data, hora, StatusAgendamento.AGENDADO);
+        Agendamento novoAgendamento = new Agendamento(this, funcionarioDesignado, servicoEscolhido, enderecoDoServico, data, hora, StatusAgendamento.AGENDADO);
         listaDeAgendamentos.add(novoAgendamento);
 
         System.out.println("\n>> AGENDAMENTO REALIZADO COM SUCESSO! <<");
         System.out.println("--- Resumo do Agendamento ---");
         System.out.println(novoAgendamento);
     }
+
+    public void avaliarAgendamento(ArrayList<Agendamento> listaDeAgendamentos, ArrayList<Avaliacao> listaDeAvaliacoes) {
+        Scanner ler = new Scanner(System.in);
+        System.out.println("\n--- Avaliar um Serviço ---");
+
+        ArrayList<Agendamento> meusAgendamentos = new ArrayList<>();
+        for (Agendamento ag : listaDeAgendamentos) {
+            if (ag.getCliente() == this) {
+                meusAgendamentos.add(ag);
+            }
+        }
+        if (meusAgendamentos.isEmpty()) {
+            System.out.println("Você não possui nenhum agendamento para avaliar.");
+            return;
+        }
+        System.out.println("Selecione o agendamento que você deseja avaliar:");
+        for (int i = 0; i < meusAgendamentos.size(); i++) {
+            Agendamento ag = meusAgendamentos.get(i);
+            System.out.println("[" + (i + 1) + "] Serviço: " + ag.getServico().getTipo() +
+                    " | Status: " + ag.getStatusAgendamento());
+        }
+        System.out.print("\nDigite o número do serviço (ou 0 para cancelar): ");
+        int escolha = ler.nextInt();
+        ler.nextLine();
+        if (escolha > 0 && escolha <= meusAgendamentos.size()) {
+            Agendamento agendamentoAvaliado = meusAgendamentos.get(escolha - 1);
+            System.out.print("Digite sua nota (de 0 a 10): ");
+            int nota = ler.nextInt();
+            ler.nextLine();
+            System.out.print("Digite seu comentário: ");
+            String comentario = ler.nextLine();
+            Avaliacao novaAvaliacao = new Avaliacao(nota, comentario, agendamentoAvaliado);
+            listaDeAvaliacoes.add(novaAvaliacao);
+            System.out.println("\n>> Avaliação registrada com sucesso! Obrigado! <<");
+        } else {
+            System.out.println("Operação cancelada.");
+        }
+    }
 }
+
 
