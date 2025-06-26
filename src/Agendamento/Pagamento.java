@@ -2,8 +2,8 @@ package Agendamento;
 
 public class Pagamento {
     private double valorPago;
-    private String metodoDePagamento; // "Cartão", "Pix", "Dinheiro"
-    private Agendamento agendamentoReferencia; // O agendamento que foi pago
+    private String metodoDePagamento;
+    private Agendamento agendamentoReferencia;
 
     public Pagamento(double valorPago, String metodoDePagamento, Agendamento agendamentoReferencia) {
         this.valorPago = valorPago;

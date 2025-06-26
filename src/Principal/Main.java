@@ -47,6 +47,7 @@ public class Main {
             System.out.println("[8] Atualizar Status Agendamento");
             System.out.println("[9] Processar Pagamento");
             System.out.println("[10] Avaliar serviço");
+            System.out.println("[11] Minhas Avaliações");
             System.out.println("[0] Sair do Sistema");
             System.out.print("Escolha uma operação: ");
             operacao = ler.nextInt();
@@ -455,11 +456,36 @@ public class Main {
             } else if (operacao == 10) {
                 if (clienteLogado == null) {
                     System.out.println("\nERRO: Você precisa fazer login como cliente para avaliar um serviço.");
-                    continue; // Volta para o início do menu
+                    continue;
                 }
                 clienteLogado.avaliarAgendamento(listaDeAgendamento, listaDeAvaliacoes);
-            }
+            } else if (operacao == 11) {
+                System.out.println("\n--- Avaliações Recebidas por " + funcionarioLogado.getNome() + " ---");
+
+                double somaDasNotas = 0;
+                int totalDeAvaliacoes = 0;
+                boolean encontrouAvaliacoes = false;
+
+                for (Avaliacao avaliacao : listaDeAvaliacoes) {
+                    if (avaliacao.getAgendamento().getFuncionario() == funcionarioLogado) {
+
+                        System.out.println(avaliacao);
+                        System.out.println("--------------------");
+                        somaDasNotas += avaliacao.getNota();
+                        totalDeAvaliacoes++;
+                        encontrouAvaliacoes = true;
+                    }
+                }
+
+                if (!encontrouAvaliacoes) {
+                    System.out.println("Você ainda não recebeu nenhuma avaliação.");
+                } else {
+                    double media = somaDasNotas / totalDeAvaliacoes;
+
+                    System.out.println("\n>> Sua nota média atual é: " + String.format("%.1f", media));
+                }
             }
         }
     }
+}
 
