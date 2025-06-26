@@ -1,0 +1,17 @@
+RF01- O sistema deve permitir o cadastro de clientes com nome, CPF e data de nascimento.
+
+RF02- O sistema deve agendar o serviço com data, horário e endereço do cliente.
+
+RF03- O sistema deve manter o cadastro do cliente.
+
+RF04- O sistema deve permitir que os clientes procurem, escolham e avaliem serviços.
+
+RF05- O sistema deve abrir um chamado de serviço, a partir dos dados do cliente.
+
+RF06- O sistema deve salvar as avaliações dos clientes e dar a nota média da empresa.
+
+RF07- O sistema deve permitir que o cliente cancele o serviço.
+
+RF08- O sistema deve permitir que os técnicos registrem o status do serviço e informem a conclusão do atendimento.
+
+RF09- O sistema deve permitir a categorização dos serviços por tipo, urgência e localização.

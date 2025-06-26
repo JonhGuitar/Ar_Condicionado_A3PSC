@@ -15,7 +15,8 @@ class Cliente {
   +construtor()
   +getters_e_setters()
   +to_string()
-  +solicitar_agendamento()
+  +realizar_agendamento()
+  +avaliar_Agendamento()
 }
 
 class Funcionario {
@@ -41,11 +42,22 @@ class Servico {
 class Agendamento {
   -data: Int
   -hora: Int
-  -endereco: String
   +construtor()
   +getters_e_setters()
   +to_string()
 }
+
+class Endereco {
+  -rua: String;
+  -numero: String;
+  -bairro: String;
+  -cidade: String;
+  -cep: String;
+  +construtor()
+  +getters_e_setters()
+  +to_string()
+}
+
 
 class Avaliacao {
   -nota: Int
@@ -76,7 +88,7 @@ class Equipamento {
 
 class Pagamento {
   -metodo_Pagamento : String
-  -destinatario : String
+  -valorPago : Double
   +construtor()
   +getters_e_setters()
   +to_string()
@@ -95,7 +107,8 @@ Funcionario o--> Agendamento
 Funcionario o--> Equipamento
 Funcionario o--> Servico
 Servico <--o Equipamento
-Pagamento o--> Servico
+Pagamento o--> Agendamento
 Pagamento o--> Cliente
+Agendamento o--> Endereco
 
 @enduml
